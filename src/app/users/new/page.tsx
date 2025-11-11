@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { Alert, Button, Divider, Form, Input, message } from "antd"; // Removed InputNumber as it's not used here
+import { Alert, Button, Divider, Form, Input, message, Upload } from "antd";
+import { UserRoundPlus } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { UserRoundPlus } from "lucide-react";
 
 const layout = {
   labelCol: { span: 8 },
@@ -16,28 +16,41 @@ const validateMessages = {
 
 const CreateUser: React.FC = () => {
   const [form] = Form.useForm();
+  const [file, setFile] = useState<File | null>(null);
   const [alertBox, setAlertBox] = useState(false);
   const router = useRouter();
 
   const onFinish = async (values: any) => {
     console.log("Submitting form with values:", values);
 
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+    if (file) formData.append("photo", file);
+
     try {
-      const response = await axios.post("http://localhost:3000/users", {
-        name: values.name,
-        email: values.email,
-        password: values.password,
+      const response = await axios.post("http://localhost:3000/users", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       message.success("User created successfully! Please sign in.");
-
       form.resetFields();
-      router.push("/login");
+      setFile(null);
+      router.push("/");
     } catch (error: any) {
       console.error("Error while creating user:", error);
       const errorMessage =
         error.response?.data?.message || "Failed to create user.";
       message.error(errorMessage);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
     }
   };
 
@@ -96,6 +109,17 @@ const CreateUser: React.FC = () => {
             rules={[{ required: true, message: "Password is required" }]}
           >
             <Input.Password size="large" placeholder="Enter password" />
+          </Form.Item>
+
+          <Form.Item
+            label="Profile Picture"
+            valuePropName="file"
+            extra="Upload a profile image"
+          >
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+            {file && (
+              <p className="text-sm text-gray-500 mt-2">Selected: {file.name}</p>
+            )}
           </Form.Item>
 
           <Form.Item

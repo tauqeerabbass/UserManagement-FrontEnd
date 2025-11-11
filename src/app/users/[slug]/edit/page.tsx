@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Button, Divider, Form, Input, message } from "antd";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { UserRoundPen } from "lucide-react";
 
 const layout = {
   labelCol: { span: 8 },
@@ -17,8 +18,8 @@ const UpdateUser: React.FC = () => {
   const [form] = Form.useForm();
   const [alertBox, setAlertBox] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("id");
+  const params = useParams();
+  const userId = params?.slug;
 
   const fetchUser = async () => {
     if (!userId) return;
@@ -46,13 +47,13 @@ const UpdateUser: React.FC = () => {
       await axios.put(`http://localhost:3000/users/${userId}`, {
         name: values.name,
         email: values.email,
-        // Password will only be included if user enters it, other old password remains on its place
+        // Password will only be included if user enters it, otherwise old password remains on its place
         ...(values.password && { password: values.password }),
       });
       message.success("User updated successfully!");
       setAlertBox(true);
       // form.resetFields();
-      setTimeout(() => router.push("/users"), 3000);
+      setTimeout(() => router.push("/users/userCards"), 3000);
     } catch (error) {
       console.error("Error while updating user:", error);
       message.error("Failed to update user.");
@@ -62,7 +63,9 @@ const UpdateUser: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <Divider className="!text-2xl !font-light !text-gray-700 !my-10">
-        ✏️ Update User (ID: {userId})
+        <div className="flex items-center justify-center gap-3">
+          <UserRoundPen /> <span>Update User (ID: {userId})</span>
+        </div>
       </Divider>
 
       {alertBox && (
@@ -123,7 +126,7 @@ const UpdateUser: React.FC = () => {
 
             <Button
               style={{ marginLeft: 16 }}
-              onClick={() => router.push("/users")}
+              onClick={() => router.push("/users/userCards")}
               className="!rounded-lg !h-10 !px-6 !font-medium transition duration-200"
             >
               Go Back

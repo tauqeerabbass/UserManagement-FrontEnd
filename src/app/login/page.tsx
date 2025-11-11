@@ -2,20 +2,32 @@
 
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Button, Divider, Form, Input, message } from "antd";
+import { Alert, Button, Divider, Form, Input, message } from "antd";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [form] = Form.useForm();
   const router = useRouter();
 
   const onFinish = async (values: any) => {
+    const emailCheck = values.email.toLowerCase();
     const result = await signIn("credentials", {
       redirect: false,
-      email: values.email,
+      email: emailCheck,
       password: values.password,
     });
 
     if (result?.error) {
-      message.error(result.error);
+      setAlertVisible(true);
+
+      message.error("Invalid credentials!", 2);
+
+      form.resetFields();
+
+      setTimeout(() => {
+        setAlertVisible(false);
+      }, 2000);
     } else {
       router.push("/");
     }
@@ -25,11 +37,24 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
         <Divider className="!text-2xl !font-semibold">User Login</Divider>
+
+        {alertVisible && (
+          <Alert
+            message="Error!"
+            description="Invalid credentials!"
+            type="error"
+            showIcon
+            closable
+            onClose={() => setAlertVisible(false)}
+            className="mb-4"
+          />
+        )}
+
         <Form
+          form={form}
           name="login"
           onFinish={onFinish}
           layout="vertical"
-          // ...
         >
           <Form.Item
             label="Email"

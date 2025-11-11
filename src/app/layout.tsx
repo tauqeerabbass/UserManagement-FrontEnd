@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import SignOutButton from "@/components/SignOutButton";
+import { Header } from "antd/es/layout/layout";
+import { Layout } from "antd";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,14 +29,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
+          <Layout>
+          <Header className="flex justify-between items-center h-40 px-6 bg-gray-800 shadow-md">
+          <div className="text-2xl font-bold text-white">User Management Platform</div>
           <SignOutButton />
+        </Header>
 
-          <main className="h-full w-full overflow-y-auto -top-10 relative">
+          <main className="h-full w-full overflow-y-auto">
             {children}
           </main>
+          </Layout>
         </Providers>
       </body>
     </html>
