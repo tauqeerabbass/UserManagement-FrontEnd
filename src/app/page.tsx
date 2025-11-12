@@ -19,7 +19,7 @@ export default function Home() {
         <h1 className="text-2xl md:text-4xl font-extrabold text-gray-800 mb-12">
           Welcome to the Platform Dashboard
         </h1>
-        <div className="flex flex-col sm:flex-row gap-8 px-10 md:px-0">
+        <div className="flex flex-col sm:flex-row gap-8 px-10 md:px-0 items-center">
             <button 
                 onClick={getUsers} 
                 className="flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-14 w-52 font-bold text-lg shadow-xl hover:shadow-2xl transition duration-300 transform hover:scale-105 cursor-pointer"

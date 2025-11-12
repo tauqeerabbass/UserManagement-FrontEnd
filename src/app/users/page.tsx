@@ -5,7 +5,7 @@ import type { TableColumnsType } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { House, UserPlus, UserRoundSearch, Users } from "lucide-react";
+import { House, UserRoundSearch, Users } from "lucide-react";
 
 interface DataType {
   id: number;

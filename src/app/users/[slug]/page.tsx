@@ -49,7 +49,7 @@ export default function UserDetailsPage() {
         />
       </div>
       {/* <p className="text-center mt-10">{users.email}</p> */}
-      <p className="text-start mt-10 px-10 md:px-28 xl:px-52 py-10">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vel accusamus architecto nam quae distinctio libero natus veniam? Beatae, autem, id veritatis distinctio modi sint sapiente accusantium pariatur assumenda natus odit!
+      <p className="text-start mt-10 px-10 md:px-28 xl:px-52 py-10 text-[16px] md:text-[18px] lg:text-[20px]">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vel accusamus architecto nam quae distinctio libero natus veniam? Beatae, autem, id veritatis distinctio modi sint sapiente accusantium pariatur assumenda natus odit!
       Aut exercitationem error vero optio, nobis iste tempore voluptatibus necessitatibus quaerat minus provident a aperiam non, impedit reprehenderit maxime repellendus, libero placeat suscipit accusamus deleniti quibusdam unde dolores odio. Voluptatum!
       Ad neque magni fugit eaque expedita saepe reiciendis impedit doloribus quidem, illo, harum obcaecati esse earum dolor nostrum culpa porro quo quaerat sequi optio quisquam, labore quibusdam consequuntur inventore! Ea!
       Qui maiores facere voluptates ullam? Aspernatur laborum laudantium esse molestias beatae ullam minima id non. Inventore facere beatae asperiores minus magni in consequatur maxime, aliquam voluptatem repellat eos possimus iure.

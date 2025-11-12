@@ -26,8 +26,8 @@ export default function PostDetailsPage() {
   if (!post) return <p className="text-center mt-40">Loading...</p>;
 
   return (
-    <div className="min-h-screen overflow-y-auto p-10 bg-gray-50">
-      <h1 className="text-4xl font-semibold mb-10 text-center mt-8">
+    <div className="min-h-screen overflow-y-auto p-2 md:p-10 bg-gray-50">
+      <h1 className="text-3xl md:text-4xl font-semibold mb-10 text-center mt-8">
         {post.title}
       </h1>
       <div className="flex justify-center mt-10 w-full">
@@ -40,14 +40,14 @@ export default function PostDetailsPage() {
       <div className="text-[16px] md:text-xl mt-10 px-8 md:px-14 lg:px-28 xl:px-36 2xl:px-60">
         {post.content && (
           <>
-            <h2 className="font-semibold ">Content</h2>
-            <p className="text-start mt-5 text-gray-600">{post.content}</p>
+            <h2 className="font-semibold text-[18px] md:text-[20px]">Content</h2>
+            <p className="text-start mt-5 text-gray-600 text-[16px] md:text-[18px] lg:text-[20px]">{post.content}</p>
           </>
         )}
         {post.description && (
           <>
-            <h2 className="font-semibold mt-10">Description</h2>
-            <p className="text-start mt-5 text-gray-600">{post.description}</p>
+            <h2 className="font-semibold mt-10 text-[18px] md:text-[20px]">Description</h2>
+            <p className="text-start mt-5 text-gray-600 text-[16px] md:text-[18px] lg:text-[20px]">{post.description}</p>
           </>
         )}
       </div>

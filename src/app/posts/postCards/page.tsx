@@ -53,10 +53,10 @@ export default function PostsPage() {
       <h1 className="text-4xl font-bold mb-12 text-center">Latest Posts</h1>
 
       <div
-        className="flex flex-col md:flex-row items-center gap-8 mb-12 bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition cursor-pointer"
+        className="flex flex-col md:flex-row items-center gap-8 mb-12 bg-white py-5 md:p-8 rounded-xl shadow-md hover:shadow-lg transition cursor-pointer"
         onClick={() => handlePostClick(firstPost.id)}
       >
-        <div className="flex-1 lg:px-10 w-1/2">
+        <div className="flex-1 px-5 lg:px-10 md:w-1/2">
           <h2 className="text-3xl font-semibold mb-4">{firstPost.title}</h2>
           <p className="text-gray-700 mb-2">{firstPost.description}</p>
           <p className="text-gray-500 text-sm">By {firstPost.user.name}</p>
@@ -74,7 +74,7 @@ export default function PostsPage() {
             </p>
           )}
         </div>
-        <div className="hidden md:block w-1/3 h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+        <div className="md:block w-full px-5 md:w-1/3 h-48rounded-lg flex items-center justify-center text-gray-400">
           <img
             src={
               firstPost?.user?.photo ||

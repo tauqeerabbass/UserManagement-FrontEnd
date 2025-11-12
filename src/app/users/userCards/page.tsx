@@ -102,7 +102,7 @@ export default function userCardsPage() {
                   </>
                 )}
             </div>
-            <div className="lg:px-10 h-80 rounded-xl overflow-hidden w-1/2">
+            <div className="lg:px-10 h-80 rounded-xl overflow-hidden w-full md:w-1/2">
               <img
                 src={firstUser?.photo}
                 alt={firstUser?.name}
