@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Button,
@@ -10,8 +10,8 @@ import {
   message,
 } from "antd";
 import axios from "axios";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { FilePlusCorner } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FilePenLine } from "lucide-react";
 
 const layout = {
   labelCol: { span: 8 },
@@ -22,35 +22,61 @@ const validateMessages = {
   required: "${label} is required!",
 };
 
-const CreatePost: React.FC = () => {
+const UpdatePost: React.FC = () => {
   const [form] = Form.useForm();
   const [alertBox, setAlertBox] = useState(false);
   const router = useRouter();
-  const params = useParams();
-  const {slug} = params;
+  const searchParams = useSearchParams();
+  const postId = searchParams.get("id");
+  const userId = searchParams.get("userId");
+
+  const fetchPost = async () => {
+    if (!postId) return;
+    try {
+      const response = await axios.get(
+        process.env.NEXT_PUBLIC_BACKEND_URL + `/posts/${postId}`
+      );
+      const post = response.data;
+      if (!post) return console.log("Post not found.");
+
+      form.setFieldsValue({
+        title: post.title,
+        content: post.content,
+        description: post.description,
+        userId: post.user.id,
+      });
+    } catch (error) {
+      console.error("Error fetching post data:", error);
+    }
+  };
+
+  useEffect(() => {
+    // console.log("Fetching post data for ID:", postId);
+    // console.log("Fetching user data for ID:", userId);
+    fetchPost();
+  }, [postId, form]);
 
   const onFinish = async (values: any) => {
     console.log("Submitting form with values:", values);
 
     try {
-      const userId = Number(values.userId);
-
-      const response = await axios.post(
-        `http://localhost:3000/posts/user/${userId}`,
+      const response = await axios.put(
+        process.env.NEXT_PUBLIC_BACKEND_URL + `/posts/${postId}`,
         {
           title: values.title,
           content: values.content,
           description: values.description,
+          user_Id: values.user_Id,
         }
       );
 
-      message.success("Post created successfully!");
+      message.success("Post updated successfully!");
       setAlertBox(true);
       // form.resetFields();
-      setTimeout(() => router.push("/posts"), 3000);
+      setTimeout(() => router.push("/posts/postCards"), 3000);
     } catch (error: any) {
-      console.error("Error while creating post:", error);
-      message.error("Failed to create post.");
+      console.error("Error while updating post:", error);
+      message.error("Failed to update post.");
     }
   };
 
@@ -58,14 +84,14 @@ const CreatePost: React.FC = () => {
     <div className="min-h-screen bg-gray-50 p-8">
       <Divider className="!text-2xl !font-light !text-gray-700 !my-10">
         <div className="flex items-center justify-center gap-3">
-          <FilePlusCorner /> <span>Create New Post</span>
+          <FilePenLine /> <span>Update Post (ID: {postId})</span>
         </div>
       </Divider>
 
       {alertBox && (
         <Alert
           message="Success!"
-          description="Post created successfully!"
+          description="Post updated successfully!"
           type="success"
           showIcon
           closable
@@ -76,38 +102,30 @@ const CreatePost: React.FC = () => {
 
       <div className="flex justify-center bg-white p-10 max-w-3xl rounded-xl shadow-2xl mx-auto">
         <Form
+          initialValues={{ user_Id: userId }}
           {...layout}
           form={form}
-          name="create-post"
+          name="update-post"
           onFinish={onFinish}
           validateMessages={validateMessages}
           style={{ maxWidth: 600, width: "100%" }}
           className="p-4"
         >
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={[{ required: true, message: "Title is required" }]}
-          >
-            <Input size="large" placeholder="Enter post title" />
+          <Form.Item name="title" label="Title">
+            <Input size="large" placeholder="Enter new title" />
           </Form.Item>
 
-          <Form.Item
-            name="content"
-            label="Content"
-            rules={[{ required: true, message: "Content is required" }]}
-          >
-            <Input.TextArea rows={4} placeholder="Enter post content" />
+          <Form.Item name="content" label="Content">
+            <Input.TextArea rows={4} placeholder="Enter new content" />
           </Form.Item>
 
           <Form.Item name="description" label="Description">
-            <Input.TextArea rows={3} placeholder="Optional description" />
+            <Input.TextArea rows={3} placeholder="Enter new description" />
           </Form.Item>
 
           {/* <Form.Item
-            name="userId"
+            name="user_Id"
             label="User ID"
-            initialValue={slug}
             rules={[
               {
                 required: true,
@@ -136,14 +154,14 @@ const CreatePost: React.FC = () => {
             <Button
               type="primary"
               htmlType="submit"
-              className="bg-blue-600 hover:bg-blue-700 !rounded-lg !h-10 !px-6 !font-semibold transition duration-200"
+              className="bg-green-600 hover:bg-green-700 !rounded-lg !h-10 !px-6 !font-semibold transition duration-200"
             >
-              Create Post
+              Update Post
             </Button>
 
             <Button
               style={{ marginLeft: 16 }}
-              onClick={() => router.push("/posts")}
+              onClick={() => router.push("/posts/postCards")}
               className="!rounded-lg !h-10 !px-6 !font-medium transition duration-200"
             >
               Go Back
@@ -155,4 +173,4 @@ const CreatePost: React.FC = () => {
   );
 };
 
-export default CreatePost;
+export default UpdatePost;

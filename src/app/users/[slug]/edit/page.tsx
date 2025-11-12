@@ -24,7 +24,7 @@ const UpdateUser: React.FC = () => {
   const fetchUser = async () => {
     if (!userId) return;
     try {
-      const response = await axios.get(`http://localhost:3000/users/${userId}`);
+      const response = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+`/users/${userId}`);
       const user = response.data;
       if (!user) return console.log("User not found.");
       form.setFieldsValue({
@@ -44,7 +44,7 @@ const UpdateUser: React.FC = () => {
   const onFinish = async (values: any) => {
     if (!userId) return;
     try {
-      await axios.put(`http://localhost:3000/users/${userId}`, {
+      await axios.put(process.env.NEXT_PUBLIC_BACKEND_URL+`/users/${userId}`, {
         name: values.name,
         email: values.email,
         // Password will only be included if user enters it, otherwise old password remains on its place

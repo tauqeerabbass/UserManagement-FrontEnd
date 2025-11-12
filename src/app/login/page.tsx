@@ -11,10 +11,10 @@ export default function LoginPage() {
   const router = useRouter();
 
   const onFinish = async (values: any) => {
-    const emailCheck = values.email.toLowerCase();
+    const emailEntered = values.email.toLowerCase();
     const result = await signIn("credentials", {
       redirect: false,
-      email: emailCheck,
+      email: emailEntered,
       password: values.password,
     });
 

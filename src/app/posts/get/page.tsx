@@ -29,7 +29,7 @@ export default function GetPostByUser() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/posts/search/${userId}`
+        process.env.NEXT_PUBLIC_BACKEND_URL + `/posts/search/${userId}`
       );
 
       if (!response.data || response.data.length === 0) {
@@ -60,7 +60,10 @@ export default function GetPostByUser() {
       </Divider>
 
       <div className="bg-white p-6 rounded-xl shadow-lg flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-        <label htmlFor="useridinput" className="text-gray-600 font-medium whitespace-nowrap">
+        <label
+          htmlFor="useridinput"
+          className="text-gray-600 font-medium whitespace-nowrap"
+        >
           Enter Search Term:
         </label>
 
@@ -89,16 +92,25 @@ export default function GetPostByUser() {
             key={post.id}
             className="border border-gray-100 p-6 rounded-xl shadow-lg bg-white hover:shadow-xl transition duration-300"
           >
-            <h3 className="text-xl font-bold mb-3 text-blue-800">{post.title}</h3>
+            <h3 className="text-xl font-bold mb-3 text-blue-800">
+              {post.title}
+            </h3>
             <div className="space-y-1 text-gray-700 text-sm">
               <p>
-                <strong className="font-semibold text-gray-900">Content:</strong> {post.content}
+                <strong className="font-semibold text-gray-900">
+                  Content:
+                </strong>{" "}
+                {post.content}
               </p>
               <p>
-                <strong className="font-semibold text-gray-900">Description:</strong> {post.description}
+                <strong className="font-semibold text-gray-900">
+                  Description:
+                </strong>{" "}
+                {post.description}
               </p>
               <p className="pt-2 border-t mt-2">
-                <strong className="font-semibold text-gray-900">User:</strong> {post.user.name} (ID: {post.user.id})
+                <strong className="font-semibold text-gray-900">User:</strong>{" "}
+                {post.user.name} (ID: {post.user.id})
               </p>
             </div>
           </div>

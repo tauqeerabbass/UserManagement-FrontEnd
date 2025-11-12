@@ -27,7 +27,7 @@ export default function GetPostByUser() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/users/search/${userId}`
+        process.env.NEXT_PUBLIC_BACKEND_URL+`/users/search/${userId}`
       );
 
       if (!response.data || response.data.length === 0) {

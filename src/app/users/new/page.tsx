@@ -30,7 +30,7 @@ const CreateUser: React.FC = () => {
     if (file) formData.append("photo", file);
 
     try {
-      const response = await axios.post("http://localhost:3000/users", formData, {
+      const response = await axios.post(process.env.NEXT_PUBLIC_BACKEND_URL+`/users`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

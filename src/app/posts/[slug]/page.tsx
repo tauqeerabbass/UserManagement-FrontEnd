@@ -9,7 +9,9 @@ export default function PostDetailsPage() {
 
   const fetchPost = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/posts/${slug}`);
+      const res = await axios.get(
+        process.env.NEXT_PUBLIC_BACKEND_URL + `/posts/${slug}`
+      );
       setPost(res.data);
     } catch (error) {
       console.error("Error fetching post:", error);
@@ -17,7 +19,7 @@ export default function PostDetailsPage() {
   };
 
   useEffect(() => {
-    console.log("Fetching post with slug:", slug);
+    // console.log("Fetching post with slug:", slug);
     fetchPost();
   }, [slug]);
 
@@ -25,33 +27,29 @@ export default function PostDetailsPage() {
 
   return (
     <div className="min-h-screen overflow-y-auto p-10 bg-gray-50">
-      <h1 className="text-4xl font-semibold mb-10 text-center mt-16">
+      <h1 className="text-4xl font-semibold mb-10 text-center mt-8">
         {post.title}
       </h1>
       <div className="flex justify-center mt-10 w-full">
         <img
-          src={
-            "https://images.unsplash.com/photo-1611859266238-4b98091d9d9b?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bmlzc2FuJTIwcjM1JTIwZ3RyfGVufDB8fDB8fHww&fm=jpg&q=60&w=3000"
-          }
+          src={post?.user?.photo}
           alt={post?.name}
           className="w-10/12 h-140 object-cover rounded-lg shadow-lg"
         />
       </div>
       <div className="text-[16px] md:text-xl mt-10 px-8 md:px-14 lg:px-28 xl:px-36 2xl:px-60">
-      {post.content && (
-        <>
-          <h2 className="font-semibold ">Content</h2>
-          <p className="text-start mt-5 text-gray-600">{post.content}</p>
-        </>
-      )}
-      {post.description && (
-        <>
-          <h2 className="font-semibold mt-10">Description</h2>
-          <p className="text-start mt-5 text-gray-600">
-            {post.description}
-          </p>
-        </>
-      )}
+        {post.content && (
+          <>
+            <h2 className="font-semibold ">Content</h2>
+            <p className="text-start mt-5 text-gray-600">{post.content}</p>
+          </>
+        )}
+        {post.description && (
+          <>
+            <h2 className="font-semibold mt-10">Description</h2>
+            <p className="text-start mt-5 text-gray-600">{post.description}</p>
+          </>
+        )}
       </div>
       {/* <p className="text-start mt-10 px-52 py-10">
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vel accusamus

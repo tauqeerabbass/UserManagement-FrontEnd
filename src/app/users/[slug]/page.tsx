@@ -21,7 +21,7 @@ export default function UserDetailsPage() {
 
   const getUserDetails = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/users/${slug}`);
+      const res = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+`/users/${slug}`);
       const userData: User = await res.data;
       setUsers(userData);
       console.log("Fetched user details:", userData);
@@ -40,12 +40,12 @@ export default function UserDetailsPage() {
 
   return (
     <div className="min-h-screen overflow-y-auto p-10 bg-gray-50">
-      <h1 className="text-4xl font-semibold mb-10 text-center mt-16">{users.name}</h1>
+      <h1 className="text-4xl font-semibold mb-10 text-center mt-8">{users.name}</h1>
       <div className="flex justify-center mt-10 w-full">
         <img
-          src={"https://blogs.a-sports.tv/wp-content/uploads/2025/11/babar-azam-1.jpg"}
+          src={users.photo}
           alt={users.name}
-          className="w-10/12 h-140 object-top rounded-lg shadow-lg"
+          className="w-10/12 h-140 object-cover rounded-lg shadow-lg"
         />
       </div>
       {/* <p className="text-center mt-10">{users.email}</p> */}

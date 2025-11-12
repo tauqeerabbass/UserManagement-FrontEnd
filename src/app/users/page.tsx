@@ -57,7 +57,7 @@ const UsersTable: React.FC = () => {
 
   const getAllUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/users");
+      const res = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+`/users`);
       setUsers(res.data);
       console.log("User data:", res.data);
     } catch (error) {

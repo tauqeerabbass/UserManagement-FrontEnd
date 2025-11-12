@@ -1,10 +1,10 @@
 "use client";
 import axios from "axios";
-import { Clock } from "lucide-react";
+import { Clock, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 interface User {
   id: number;
@@ -21,7 +21,9 @@ export default function userCardsPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/users");
+      const res = await axios.get(
+        process.env.NEXT_PUBLIC_BACKEND_URL + `/users`
+      );
       const usersData = await res.data;
       setUsers(usersData);
       // console.log("Fetched users:", usersData);
@@ -37,6 +39,14 @@ export default function userCardsPage() {
 
   const handleEditProfile = () => {
     router.push(`/users/${session?.user?.id}/edit`);
+  };
+
+  const handleCreatePost = () => {
+    if (!session?.user?.id) {
+      console.error("No user ID found in session!");
+      return;
+    }
+    router.push(`/posts/create?userId=${session.user.id}`);
   };
 
   useEffect(() => {
@@ -57,36 +67,46 @@ export default function userCardsPage() {
       {users.length > 0 && (
         <>
           <div
-            className="flex flex-col  md:flex-row items-center gap-10 mb-10 bg-white p-6 rounded-lg shadow-sm cursor-pointer"
+            className="flex flex-col  md:flex-row items-center gap-10 mb-10 bg-white p-6 rounded-lg shadow-sm cursor-pointer hover:shadow-lg transition"
             onClick={() => handleUserClick(firstUser.id)}
           >
             <div className="flex-1 lg:px-20 md:w-1/2">
               <h2 className="text-3xl font-medium mb-3">{firstUser?.name}</h2>
               {/* <p>{users[0].email}</p> */}
-              <p>
+              <p className="text-[16px]">
                 {firstUser?.name} is passionate about technology. Currently,
                 they are focused, and are always looking to explore new ideas
                 and experiences related to their interests.
               </p>
-              {Number(session?.user?.id) === firstUser?.id && (
-                <p
-                  className="mt-5 text-sm text-green-600 font-medium cursor-alias"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditProfile();
-                  }}
-                >
-                  Edit your profile
-                </p>
-              )}
+              {session?.user?.id &&
+                Number(session.user.id) === firstUser?.id && (
+                  <>
+                    <p
+                      className="mt-6 text-[15px] text-green-600 font-medium cursor-alias flex items-center gap-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCreatePost();
+                      }}
+                    >
+                      Create a post <Plus className="h-4 w-4" />
+                    </p>
+                    <p
+                      className="mt-2 text-[15px] text-green-600 font-medium cursor-alias"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditProfile();
+                      }}
+                    >
+                      Edit your profile
+                    </p>
+                  </>
+                )}
             </div>
             <div className="lg:px-10 h-80 rounded-xl overflow-hidden w-1/2">
               <img
-                src={
-                  "https://blogs.a-sports.tv/wp-content/uploads/2025/11/babar-azam-1.jpg"
-                }
+                src={firstUser?.photo}
                 alt={firstUser?.name}
-                className="w-full h-140 object-top rounded-lg shadow-lg"
+                className="w-full h-full object-cover rounded-lg shadow-lg"
               />
             </div>
           </div>
@@ -100,11 +120,9 @@ export default function userCardsPage() {
               >
                 <div className="w-full h-40 overflow-hidden rounded-lg mb-3">
                   <img
-                    src={
-                      "https://images.unsplash.com/photo-1611859266238-4b98091d9d9b?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bmlzc2FuJTIwcjM1JTIwZ3RyfGVufDB8fDB8fHww&fm=jpg&q=60&w=3000"
-                    }
+                    src={user?.photo}
                     alt="image"
-                    className="w-full h-140 object-center rounded-lg shadow-lg"
+                    className="w-full h-full object-cover rounded-lg shadow-lg"
                   />
                 </div>
                 <h3 className="font-medium text-lg">{user.name}</h3>
@@ -113,16 +131,27 @@ export default function userCardsPage() {
                   <Clock className="h-5 w-5" />
                   11, Nov, 2025
                 </p>
-                {Number(session?.user?.id) === user?.id && (
-                  <p
-                    className="mt-4 text-sm text-green-600 font-medium text-end cursor-alias"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditProfile();
-                    }}
-                  >
-                    Edit your profile
-                  </p>
+                {session?.user?.id && Number(session.user.id) === user?.id && (
+                  <>
+                    <p
+                      className="mt-6 text-sm text-green-600 font-medium cursor-alias flex items-center gap-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCreatePost();
+                      }}
+                    >
+                      Create a post <Plus className="h-4 w-4" />
+                    </p>
+                    <p
+                      className="mt-2 text-sm text-green-600 font-medium cursor-alias"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditProfile();
+                      }}
+                    >
+                      Edit your profile
+                    </p>
+                  </>
                 )}
               </div>
             ))}

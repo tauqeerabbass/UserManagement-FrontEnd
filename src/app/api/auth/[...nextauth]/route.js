@@ -17,7 +17,7 @@ const handler = NextAuth({
 
         try {
           const response = await axios.post(
-            "http://localhost:3000/auth/login",
+            process.env.NEXT_PUBLIC_BACKEND_URL + "/auth/login",
             {
               email: credentials.email,
               password: credentials.password,

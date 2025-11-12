@@ -20,7 +20,7 @@ export default function SignOutButton() {
     <Button
       type="default"
       onClick={handleSignOut}
-      className="!rounded-md shadow-sm"
+      className="!rounded-md shadow-sm -mr-8 md:mr-0"
     >
       Sign Out
     </Button>

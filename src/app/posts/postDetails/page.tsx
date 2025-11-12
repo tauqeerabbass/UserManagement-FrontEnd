@@ -10,7 +10,7 @@ export default function PostDetailsPage() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/posts/slug/${slug}`);
+        const res = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+`/posts/slug/${slug}`);
         setPost(res.data);
       } catch (error) {
         console.error("Error fetching post:", error);

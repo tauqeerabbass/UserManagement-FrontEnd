@@ -71,17 +71,13 @@ const App: React.FC = () => {
     },
   ];
 
-  const handleCheckboxChange = (list: string[]) => {
-    setCheckedList(list);
-  };
-
   const filteredColumns = columns.filter((col) =>
     checkedList.includes(col.key as string)
   );
 
   const getAllPosts = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/posts");
+      const res = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+`/posts`);
       setPosts(res.data);
     } catch (error) {
       console.error("Unable to fetch data:", error);
@@ -116,7 +112,7 @@ const App: React.FC = () => {
             type="primary"
             onClick={() => {
               if (!session?.user) return;
-              router.push(`/posts/${session?.user?.id}`);
+              router.push(`/posts/${session?.user?.id}/edit`);
             }}
             className="bg-blue-600 hover:bg-blue-700 !rounded-lg !h-10 !px-6 !font-semibold shadow-md transition duration-200"
           >

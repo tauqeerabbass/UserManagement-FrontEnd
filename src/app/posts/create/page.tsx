@@ -10,8 +10,8 @@ import {
   message,
 } from "antd";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
-import { FilePenLine } from "lucide-react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { FilePlusCorner } from "lucide-react";
 
 const layout = {
   labelCol: { span: 8 },
@@ -22,72 +22,81 @@ const validateMessages = {
   required: "${label} is required!",
 };
 
-const UpdatePost: React.FC = () => {
+const CreatePost: React.FC = () => {
   const [form] = Form.useForm();
   const [alertBox, setAlertBox] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const postId = searchParams.get("id");
   const userId = searchParams.get("userId");
-
-  const fetchPost = async () => {
-    if (!postId) return;
-    try {
-      const response = await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL+`/posts/${postId}`);
-      const post = response.data;
-      if (!post) return console.log("Post not found.");
-
-      form.setFieldsValue({
-        title: post.title,
-        content: post.content,
-        description: post.description,
-        userId: post.user.id,
-      });
-    } catch (error) {
-      console.error("Error fetching post data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchPost();
-  }, [postId, form]);
 
   const onFinish = async (values: any) => {
     console.log("Submitting form with values:", values);
 
+    const base = process.env.NEXT_PUBLIC_BACKEND_URL;
+    if (!base) {
+      console.log("URL is not defined");
+      // console.error("NEXT_PUBLIC_BACKEND_URL is not defined");
+      // message.error("App configuration error: missing backend URL");
+      return;
+    }
+
+    if (!userId) {
+      console.error(
+        "userId is missing — check navigation that opened this page"
+      );
+      message.error(
+        "Missing user id. Please open this page with a userId query parameter."
+      );
+      return;
+    }
+
     try {
-      const response = await axios.put(
-        process.env.NEXT_PUBLIC_BACKEND_URL+`/posts/${postId}`,
+      // const userId = Number(values.userId);
+
+      const response = await axios.post(
+        process.env.NEXT_PUBLIC_BACKEND_URL + `/posts/user/${userId}`,
         {
           title: values.title,
           content: values.content,
           description: values.description,
-          user_Id: values.user_Id,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
         }
       );
 
-      message.success("Post updated successfully!");
+      message.success("Post created successfully!");
       setAlertBox(true);
       // form.resetFields();
-      setTimeout(() => router.push("/posts"), 3000);
+      setTimeout(() => router.push("/posts/postCards"), 3000);
     } catch (error: any) {
-      console.error("Error while updating post:", error);
-      message.error("Failed to update post.");
+      console.error("Error while creating post:", {
+        message: error.message,
+        status: error?.response?.status,
+        data: error?.response?.data,
+      });
+      const serverMsg =
+        error?.response?.data?.message || "Failed to create post.";
+      message.error(serverMsg);
     }
   };
+
+  useEffect(() => {
+    console.log("CreatePost - userId from query:", userId);
+  }, [userId]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <Divider className="!text-2xl !font-light !text-gray-700 !my-10">
         <div className="flex items-center justify-center gap-3">
-          <FilePenLine /> <span>Update Post (ID: {postId})</span>
+          <FilePlusCorner /> <span>Create New Post</span>
         </div>
       </Divider>
 
       {alertBox && (
         <Alert
           message="Success!"
-          description="Post updated successfully!"
+          description="Post created successfully!"
           type="success"
           showIcon
           closable
@@ -98,30 +107,38 @@ const UpdatePost: React.FC = () => {
 
       <div className="flex justify-center bg-white p-10 max-w-3xl rounded-xl shadow-2xl mx-auto">
         <Form
-          initialValues={{ user_Id: userId }}
           {...layout}
           form={form}
-          name="update-post"
+          name="create-post"
           onFinish={onFinish}
           validateMessages={validateMessages}
           style={{ maxWidth: 600, width: "100%" }}
           className="p-4"
         >
-          <Form.Item name="title" label="Title">
-            <Input size="large" placeholder="Enter new title" />
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[{ required: true, message: "Title is required" }]}
+          >
+            <Input size="large" placeholder="Enter post title" />
           </Form.Item>
 
-          <Form.Item name="content" label="Content">
-            <Input.TextArea rows={4} placeholder="Enter new content" />
+          <Form.Item
+            name="content"
+            label="Content"
+            rules={[{ required: true, message: "Content is required" }]}
+          >
+            <Input.TextArea rows={4} placeholder="Enter post content" />
           </Form.Item>
 
           <Form.Item name="description" label="Description">
-            <Input.TextArea rows={3} placeholder="Enter new description" />
+            <Input.TextArea rows={3} placeholder="Optional description" />
           </Form.Item>
 
           {/* <Form.Item
-            name="user_Id"
+            name="userId"
             label="User ID"
+            initialValue={slug}
             rules={[
               {
                 required: true,
@@ -150,14 +167,14 @@ const UpdatePost: React.FC = () => {
             <Button
               type="primary"
               htmlType="submit"
-              className="bg-green-600 hover:bg-green-700 !rounded-lg !h-10 !px-6 !font-semibold transition duration-200"
+              className="bg-blue-600 hover:bg-blue-700 !rounded-lg !h-10 !px-6 !font-semibold transition duration-200"
             >
-              Update Post
+              Create Post
             </Button>
 
             <Button
               style={{ marginLeft: 16 }}
-              onClick={() => router.push("/posts")}
+              onClick={() => router.push("/users/userCards")}
               className="!rounded-lg !h-10 !px-6 !font-medium transition duration-200"
             >
               Go Back
@@ -169,4 +186,4 @@ const UpdatePost: React.FC = () => {
   );
 };
 
-export default UpdatePost;
+export default CreatePost;
