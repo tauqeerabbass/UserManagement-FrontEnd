@@ -1,10 +1,9 @@
 "use client";
 import axios from "axios";
-import { Clock, Plus } from "lucide-react";
+import { Clock, Plus, ArrowUpRight } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface User {
   id: number;
@@ -16,8 +15,7 @@ interface User {
 export default function userCardsPage() {
   const [users, setUsers] = useState<User[]>([]);
   const router = useRouter();
-  const { data: session, status } = useSession();
-  // console.log("Session data:", session?.user?.id);
+  const { data: session } = useSession();
 
   const fetchUsers = async () => {
     try {
@@ -26,14 +24,12 @@ export default function userCardsPage() {
       );
       const usersData = await res.data;
       setUsers(usersData);
-      // console.log("Fetched users:", usersData);
     } catch (error) {
       console.error("Unable to fetch users:", error);
     }
   };
 
   const handleUserClick = (id: number) => {
-    // console.log("User clicked with ID:", id);
     router.push(`/users/${id}`);
   };
 
@@ -54,104 +50,146 @@ export default function userCardsPage() {
   }, []);
 
   if (!users || users.length === 0) {
-    return <p className="text-center mt-40 text-lg">Loading users...</p>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg text-gray-600">Loading users...</p>
+      </div>
+    );
   }
 
   const firstUser = users[0];
   const otherUsers = users.slice(1);
 
   return (
-    <div className="min-h-screen overflow-y-auto p-10 bg-gray-50">
-      <h1 className="text-4xl font-semibold mb-10 text-center">Users</h1>
+    <div className="min-h-screen p-6 md:p-10">
+      <h1 className="text-4xl md:text-5xl font-bold mb-10 text-center gradient-text animate-fadeInUp">
+        Community Members
+      </h1>
 
       {users.length > 0 && (
         <>
           <div
-            className="flex flex-col  md:flex-row items-center gap-10 mb-10 bg-white p-6 rounded-lg shadow-sm cursor-pointer hover:shadow-lg transition"
+            className="card group cursor-pointer mb-10 hover-lift overflow-hidden"
             onClick={() => handleUserClick(firstUser.id)}
           >
-            <div className="flex-1 lg:px-20 md:w-1/2">
-              <h2 className="text-3xl font-medium mb-3">{firstUser?.name}</h2>
-              {/* <p>{users[0].email}</p> */}
-              <p className="text-[16px]">
-                {firstUser?.name} is passionate about technology. Currently,
-                they are focused, and are always looking to explore new ideas
-                and experiences related to their interests.
-              </p>
-              {session?.user?.id &&
-                Number(session.user.id) === firstUser?.id && (
-                  <>
-                    <p
-                      className="mt-6 text-[15px] text-green-600 font-medium cursor-alias flex items-center gap-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCreatePost();
-                      }}
-                    >
-                      Create a post <Plus className="h-4 w-4" />
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex-1 px-6 md:px-10">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                      {firstUser?.name}
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm">
+                      {firstUser?.email}
                     </p>
-                    <p
-                      className="mt-2 text-[15px] text-green-600 font-medium cursor-alias"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditProfile();
-                      }}
-                    >
-                      Edit your profile
-                    </p>
-                  </>
-                )}
-            </div>
-            <div className="lg:px-10 h-80 rounded-xl overflow-hidden w-full md:w-1/2">
-              <img
-                src={firstUser?.photo}
-                alt={firstUser?.name}
-                className="w-full h-full object-cover rounded-lg shadow-lg"
-              />
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30">
+                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">Featured</span>
+                  </div>
+                </div>
+                
+                <p className="text-base text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                  {firstUser?.name} is passionate about technology. Currently,
+                  they are focused on creating meaningful content and always
+                  looking to explore new ideas and experiences.
+                </p>
+
+                {session?.user?.id &&
+                  Number(session.user.id) === firstUser?.id && (
+                    <div className="space-y-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCreatePost();
+                        }}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-semibold transition-all duration-300 hover:shadow-lg"
+                      >
+                        <Plus className="w-4 h-4" /> Create a Post
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditProfile();
+                        }}
+                        className="block ml-0 px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-all duration-300 hover:shadow-lg"
+                      >
+                        Edit Your Profile
+                      </button>
+                    </div>
+                  )}
+              </div>
+
+              <div className="w-full md:w-1/3">
+                <div className="relative overflow-hidden rounded-xl shadow-xl group-hover:shadow-2xl transition-shadow duration-300 h-80">
+                  <img
+                    src={firstUser?.photo || "https://via.placeholder.com/300x400?text=User"}
+                    alt={firstUser?.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-gray-100 p-5 rounded-lg">
-            {otherUsers.map((user) => (
+          <div className="space-y-4 mb-6">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <ArrowUpRight className="w-6 h-6 text-purple-600" />
+              Other Members
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {otherUsers.map((user, idx) => (
               <div
                 key={user.id}
-                className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+                className="card group cursor-pointer hover-lift flex flex-col opacity-0 animate-fadeInUp"
+                style={{ animationDelay: `${idx * 0.05}s`, animationFillMode: "forwards" }}
                 onClick={() => handleUserClick(user?.id)}
               >
-                <div className="w-full h-40 overflow-hidden rounded-lg mb-3">
+                
+                <div className="w-full h-48 overflow-hidden rounded-lg mb-4 relative">
                   <img
-                    src={user?.photo}
+                    src={user?.photo || "https://via.placeholder.com/200x250?text=User"}
                     alt="image"
-                    className="w-full h-full object-cover rounded-lg shadow-lg"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
                 </div>
-                <h3 className="font-medium text-lg">{user.name}</h3>
-                {/* <p className="text-sm text-gray-500">{user.email}</p> */}
-                <p className="text-sm text-gray-500 flex gap-1 mt-2">
-                  <Clock className="h-5 w-5" />
-                  11, Nov, 2025
+
+                <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-1">
+                  {user.name}
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mb-3">
+                  {user.email}
                 </p>
+
+                <div className="flex items-center gap-1 text-gray-400 text-xs mb-4">
+                  <Clock className="w-4 h-4" />
+                  <span>Member since Nov 2025</span>
+                </div>
+
                 {session?.user?.id && Number(session.user.id) === user?.id && (
-                  <>
-                    <p
-                      className="mt-6 text-sm text-green-600 font-medium cursor-alias flex items-center gap-2"
+                  <div className="space-y-2 mt-auto">
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCreatePost();
                       }}
+                      className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg"
                     >
-                      Create a post <Plus className="h-4 w-4" />
-                    </p>
-                    <p
-                      className="mt-2 text-sm text-green-600 font-medium cursor-alias"
+                      <Plus className="w-3 h-3" /> Create Post
+                    </button>
+                    <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleEditProfile();
                       }}
+                      className="w-full px-3 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold transition-all duration-300 hover:shadow-lg"
                     >
-                      Edit your profile
-                    </p>
-                  </>
+                      Edit Profile
+                    </button>
+                  </div>
                 )}
               </div>
             ))}

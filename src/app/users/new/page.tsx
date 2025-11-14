@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Alert, Button, Divider, Form, Input, message, Upload } from "antd";
+import { Button, Form, Input, message, Upload } from "antd";
 import { UserRoundPlus } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -55,92 +55,143 @@ const CreateUser: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <Divider className="!text-2xl !font-light !text-gray-700 !my-10">
-        <div className="flex items-center justify-center gap-3">
-          <UserRoundPlus /> <span>Create New User</span>
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6 md:p-10">
+      <div className="text-center mb-12 opacity-0 animate-fadeInUp">
+        <div className="inline-flex items-center justify-center mb-6 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30">
+          <UserRoundPlus className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2" />
+          <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">Join Us</span>
         </div>
-      </Divider>
+        <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-3">
+          Create Your Account
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          Join our community and start creating amazing content
+        </p>
+      </div>
 
-      {alertBox && (
-        <Alert
-          message="Success!"
-          description="User created successfully!"
-          type="success"
-          showIcon
-          closable
-          onClose={() => setAlertBox(false)}
-          style={{ marginBottom: "20px", maxWidth: 600, margin: "20px auto" }}
-        />
-      )}
-
-      <div className="flex justify-center bg-white p-10 max-w-3xl rounded-xl shadow-2xl mx-auto">
+      <div className="card max-w-2xl mx-auto opacity-0 animate-fadeInUp" style={{ animationDelay: "0.2s" }}>
         <Form
           {...layout}
           form={form}
           name="create-user"
           onFinish={onFinish}
           validateMessages={validateMessages}
-          style={{ maxWidth: 600, width: "100%" }}
-          className="p-4"
+          layout="vertical"
+          className="space-y-6"
         >
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Name is required" }]}
-          >
-            <Input size="large" placeholder="Enter full name" />
-          </Form.Item>
 
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[
-              { required: true, message: "Email is required" },
-              { type: "email", message: "Please enter a valid email" },
-            ]}
-          >
-            <Input size="large" placeholder="Enter email address" />
-          </Form.Item>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Full Name *
+            </label>
+            <Form.Item
+              name="name"
+              rules={[{ required: true, message: "Name is required" }]}
+              className="mb-0!"
+            >
+              <Input
+                size="large"
+                placeholder="Enter your full name..."
+                className="rounded-lg! border-gray-300! dark:border-gray-600! bg-white! dark:bg-gray-700! text-gray-900! dark:text-white! focus:border-blue-500! focus:ring-2! focus:ring-blue-500/20! transition-all duration-300"
+              />
+            </Form.Item>
+          </div>
 
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Password is required" }]}
-          >
-            <Input.Password size="large" placeholder="Enter password" />
-          </Form.Item>
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Email Address *
+            </label>
+            <Form.Item
+              name="email"
+              rules={[
+                { required: true, message: "Email is required" },
+                { type: "email", message: "Please enter a valid email" },
+              ]}
+              className="mb-0!"
+            >
+              <Input
+                size="large"
+                placeholder="Enter your email address..."
+                className="rounded-lg! border-gray-300! dark:border-gray-600! bg-white! dark:bg-gray-700! text-gray-900! dark:text-white! focus:border-blue-500! focus:ring-2! focus:ring-blue-500/20! transition-all duration-300"
+              />
+            </Form.Item>
+          </div>
 
-          <Form.Item
-            label="Profile Picture"
-            valuePropName="file"
-            extra="Upload a profile image"
-          >
-            <input type="file" accept="image/*" onChange={handleFileChange} />
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Password *
+            </label>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: "Password is required" }]}
+              className="mb-0!"
+            >
+              <Input.Password
+                size="large"
+                placeholder="Create a secure password..."
+                className="rounded-lg! border-gray-300! dark:border-gray-600! bg-white! dark:bg-gray-700! text-gray-900! dark:text-white! focus:border-blue-500! focus:ring-2! focus:ring-blue-500/20! transition-all duration-300"
+              />
+            </Form.Item>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+              Profile Picture
+            </label>
+            <div className="relative">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+                id="profile-file-input"
+              />
+              <label
+                htmlFor="profile-file-input"
+                className="block p-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-400 transition-colors duration-300 cursor-pointer text-center"
+              >
+                <div className="text-3xl mb-2">👤</div>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Click to upload your profile picture
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  PNG, JPG, GIF up to 5MB (optional)
+                </p>
+              </label>
+            </div>
             {file && (
-              <p className="text-sm text-gray-500 mt-2">Selected: {file.name}</p>
+              <p className="text-sm text-green-600 dark:text-green-400 mt-2 font-medium">
+                ✓ Selected: {file.name}
+              </p>
             )}
-          </Form.Item>
+          </div>
 
-          <Form.Item
-            wrapperCol={{ ...layout.wrapperCol, offset: 8 }}
-            className="!mt-8"
-          >
+          <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
             <Button
               type="primary"
               htmlType="submit"
-              className="bg-blue-600 hover:bg-blue-700 !rounded-lg !h-10 !px-6 !font-semibold transition duration-200"
+              className="btn-primary flex-1"
             >
-              Sign Up
+              Create Account
             </Button>
             <Button
-              style={{ marginLeft: 16 }}
               onClick={() => router.push("/login")}
-              className="!rounded-lg !h-10 !px-6 !font-medium transition duration-200"
+              className="btn-secondary flex-1"
             >
-              Sign In
+              Sign In Instead
             </Button>
-          </Form.Item>
+          </div>
+
+          <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+            Already have an account?{" "}
+            <button
+              type="button"
+              onClick={() => router.push("/login")}
+              className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+            >
+              Sign in here
+            </button>
+          </p>
         </Form>
       </div>
     </div>

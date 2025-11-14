@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
 import { signOut, useSession } from "next-auth/react";
-import { Button } from "antd";
 import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 export default function SignOutButton() {
   const { status } = useSession();
@@ -17,12 +16,12 @@ export default function SignOutButton() {
   };
 
   return (
-    <Button
-      type="default"
+    <button
       onClick={handleSignOut}
-      className="!rounded-md shadow-sm -mr-8 md:mr-0"
+      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 text-white font-medium transition-all duration-300 hover:scale-105 active:scale-95 shadow-md"
     >
-      Sign Out
-    </Button>
+      <LogOut className="w-4 h-4" />
+      <span className="hidden sm:inline">Sign Out</span>
+    </button>
   );
 }
